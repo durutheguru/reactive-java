@@ -1,7 +1,9 @@
 package com.julianduru.learning.reactive.util;
 
 import com.github.javafaker.Faker;
+import com.julianduru.learning.reactive.sub.DefaultSubscriber;
 import lombok.extern.java.Log;
+import org.reactivestreams.Subscriber;
 
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -44,6 +46,17 @@ public class Util {
             log.log(Level.SEVERE, e.getMessage(), e);
         }
     }
+
+
+    public static Subscriber<Object> subscriber() {
+        return new DefaultSubscriber();
+    }
+
+
+    public static Subscriber<Object> subscriber(String name) {
+        return new DefaultSubscriber(name);
+    }
+
 
 }
 

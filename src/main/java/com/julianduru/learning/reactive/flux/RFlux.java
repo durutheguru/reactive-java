@@ -1,5 +1,8 @@
 package com.julianduru.learning.reactive.flux;
 
+import com.julianduru.learning.reactive.service.OrderService;
+import com.julianduru.learning.reactive.service.UserService;
+import com.julianduru.learning.reactive.sub.NameProducer;
 import com.julianduru.learning.reactive.util.NameGenerator;
 import com.julianduru.learning.reactive.util.Util;
 import org.reactivestreams.Subscriber;
@@ -18,7 +21,11 @@ public class RFlux {
     public static void main(String[] args) {
 //        multipleSubscribe();
 //        fluxSubscription();
-        fluxListSampling();
+//        fluxListSampling();
+//        fluxCreate();
+//        fluxCreateFix();
+//        fluxGenerate();
+        flatMap();
     }
 
 
@@ -95,6 +102,57 @@ public class RFlux {
 
     private static void fluxFromMono() {
         Flux.from(Mono.just("5"));
+    }
+
+
+    private static void fluxCreate() {
+        var producer = new NameProducer();
+
+        Flux.create(producer)
+            .subscribe(Util.subscriber("Juney"));
+
+        Runnable runnable = producer::produce;
+
+        for (int i = 0; i < 10; i++) {
+            new Thread(runnable).start();
+        }
+    }
+
+
+    private static void fluxCreateFix() {
+        Flux
+            .create(sink -> {
+                String country;
+
+                do {
+                    country = Util.faker().country().name();
+                    System.out.println("Emitting: " + country);
+                    sink.next(country);
+                } while (
+                    !sink.isCancelled() && !country.equalsIgnoreCase("canada")
+                );
+
+                sink.complete();
+            })
+            .take(3)
+            .subscribe(Util.subscriber());
+    }
+
+
+    private static void fluxGenerate() {
+        Flux.generate(
+            sink -> {
+                System.out.println("Emitting....");
+                sink.next(Util.faker().country().name());
+            }
+        ).take(10).subscribe(Util.subscriber());
+    }
+
+
+    private static void flatMap() {
+        UserService.getUsers()
+            .flatMap(user -> OrderService.getOrder(user.userId()))
+            .subscribe(Util.subscriber());
     }
 
 
