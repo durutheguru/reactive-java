@@ -3,7 +3,7 @@ package com.julianduru.learning.reactive.flux;
 import com.julianduru.learning.reactive.service.OrderService;
 import com.julianduru.learning.reactive.service.UserService;
 import com.julianduru.learning.reactive.sub.NameProducer;
-import com.julianduru.learning.reactive.util.NameGenerator;
+import com.julianduru.learning.reactive.util.NamePublisher;
 import com.julianduru.learning.reactive.util.Util;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -94,7 +94,7 @@ public class RFlux {
 //        var names = NameGenerator.getNames(5);
 //        System.out.println(names);
 
-        var names = NameGenerator
+        var names = NamePublisher
             .getFluxNames(5)
             .subscribe(System.out::println);
     }

@@ -6,30 +6,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * created by julian on 13/02/2022
+ * created by julian on 24/02/2022
  */
 public class NameGenerator {
 
 
-    public static List<String> getNames(int count) {
-        var list = new ArrayList<String>(count);
+    private List<String> list = new ArrayList<>();
 
-        for (int i = 0; i < count; i++) {
-            list.add(getName());
-        }
+    public Flux<String> getNames() {
+        return Flux.generate(
+            sink -> {
+                System.out.println("generated fresh");
+                Util.sleepSeconds(1);
 
-        return list;
+                var name = Util.faker().name().fullName();
+                list.add(name);
+                sink.next(name);
+            })
+            .cast(String.class)
+            .startWith(getFromCache());
     }
 
 
-    public static Flux<String> getFluxNames(int count) {
-        return Flux.range(0, count).map(i -> getName());
+    private Flux<String> getFromCache() {
+        return Flux.fromIterable(list);
     }
 
-
-    private static String getName() {
-        Util.sleepSeconds(1);
-        return Util.faker().name().fullName();
-    }
 
 }

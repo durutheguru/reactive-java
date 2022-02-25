@@ -39,8 +39,13 @@ public class Util {
 
 
     public static void sleepSeconds(int seconds) {
+        sleepMillis(seconds * 1000L);
+    }
+
+
+    public static void sleepMillis(long millis) {
         try{
-            Thread.sleep(seconds * 1000);
+            Thread.sleep(millis);
         }
         catch (InterruptedException e) {
             log.log(Level.SEVERE, e.getMessage(), e);
@@ -55,6 +60,16 @@ public class Util {
 
     public static Subscriber<Object> subscriber(String name) {
         return new DefaultSubscriber(name);
+    }
+
+
+    public static Subscriber<Object> subscriber(Long delay) {
+        return new DefaultSubscriber(delay);
+    }
+
+
+    public static Subscriber<Object> subscriber(String name, Long delay) {
+        return new DefaultSubscriber(name, delay);
     }
 
 

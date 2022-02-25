@@ -1,18 +1,34 @@
 package com.julianduru.learning.reactive.sub;
 
+import com.julianduru.learning.reactive.util.Util;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
 /**
  * created by julian on 14/02/2022
  */
-public record DefaultSubscriber(String name) implements Subscriber<Object> {
+public class DefaultSubscriber implements Subscriber<Object> {
 
 
-    public DefaultSubscriber {
-        if (name.length() < 5) {
-            throw new IllegalArgumentException("Name cannot be less than 5 characters");
-        }
+    private final String name;
+
+
+    private final Long SUBSCRIPTION_TIMEOUT_MILLIS;
+
+
+    public DefaultSubscriber(String name) {
+        this(name, -1L);
+    }
+
+
+    public DefaultSubscriber(Long timeout) {
+        this("", timeout);
+    }
+
+
+    public DefaultSubscriber(String name, Long timeout) {
+        this.name = name;
+        this.SUBSCRIPTION_TIMEOUT_MILLIS = timeout;
     }
 
 
@@ -29,6 +45,10 @@ public record DefaultSubscriber(String name) implements Subscriber<Object> {
 
     @Override
     public void onNext(Object o) {
+        if (SUBSCRIPTION_TIMEOUT_MILLIS > 0) {
+            Util.sleepMillis(SUBSCRIPTION_TIMEOUT_MILLIS);
+        }
+
         System.out.printf("%s Received %s%n", name(), o.toString());
     }
 
@@ -42,6 +62,11 @@ public record DefaultSubscriber(String name) implements Subscriber<Object> {
     @Override
     public void onComplete() {
         System.out.printf("%s Completed%n", name());
+    }
+
+
+    private String name() {
+        return this.name;
     }
 
 
