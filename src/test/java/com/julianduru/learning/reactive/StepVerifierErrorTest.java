@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
-import java.io.IOException;
-
 /**
  * created by julian on 07/03/2022
  */
